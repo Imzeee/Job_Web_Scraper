@@ -12,7 +12,6 @@ class BrowserBot:
         self.driver = Opera(executable_path='./operadriver')
         self.driver.get("https://nofluffjobs.com/pl")
         self.driver.fullscreen_window()
-
         self.jobs_descriptions = []
         self.jobs_links = []
 
@@ -29,29 +28,26 @@ class BrowserBot:
             self.driver.quit()
 
     def print_job_offers(self):
-        print(f"Found {len(self.jobs_links)} jobs")
+        print(f"FOUND {len(self.jobs_links)} JOBS\n-------------")
         for i in range(len(self.jobs_links)):
-            print(f"{i + 1} JOB:")
-            print(f"{self.jobs_descriptions[i]} {self.jobs_links[i]}")
+            print(f"{i + 1}: {self.jobs_descriptions[i]} \t LINK:{self.jobs_links[i]}")
 
     def collect_jobs_descriptions(self):
         try:
             headers = WebDriverWait(self.driver, 10).until(
                 EC.presence_of_all_elements_located((By.CLASS_NAME, 'posting-list-item')))
             for header in headers:
-                temp_list = list(header.text.split("\n"))
-                self.jobs_descriptions.append(temp_list[0])
+                self.jobs_descriptions.append(list(header.text.split("\n"))[0])
         except NoSuchElementException:
             print("Error in collect_jobs_description()")
             self.driver.quit()
 
     def collect_jobs_links(self):
         try:
-            find = self.driver.find_elements_by_xpath('.//a')
-            for a in find:
-                temp = str(a.get_attribute('href'))
-                if re.search("^.*/job/.*$", temp):
-                    self.jobs_links.append(a.get_attribute('href'))
+            links = self.driver.find_elements_by_xpath('.//a')
+            for link in links:
+                if re.search("^.*/job/.*$", str(link.get_attribute('href'))):
+                    self.jobs_links.append(link.get_attribute('href'))
         except NoSuchElementException:
             print("Error in collect_jobs_links()")
             self.driver.quit()
@@ -61,13 +57,9 @@ class BrowserBot:
             EC.presence_of_all_elements_located((By.CLASS_NAME, "page-item")))
         checkpoint = False
         for page in pages:
-
             if checkpoint and (page.text == str(scroll_list[0] + 1)):
-                print("Found next")
                 scroll_list[1] = True
-
             if page.text == str(scroll_list[0]):
-                print("Clicking")
                 try:
                     self.driver.implicitly_wait(1)
                     page.click()
@@ -77,7 +69,7 @@ class BrowserBot:
                 checkpoint = True
                 continue
 
-    def scroll_all_pages(self):
+    def collect_job_offers(self):
         pages_available = WebDriverWait(self.driver, 10).until(
             EC.presence_of_all_elements_located((By.CLASS_NAME, "page-item")))
         check = False
@@ -85,6 +77,8 @@ class BrowserBot:
             if pa.text == str(2):
                 check = True
         scroll_list = [2, False]
+        self.collect_jobs_links()
+        self.collect_jobs_descriptions()
         if check:
             while True:
                 scroll_list[1] = False
@@ -96,24 +90,22 @@ class BrowserBot:
                 if not scroll_list[1]:
                     break
 
-    def find_location_filter(self, name, user_input):
+    def choose_location_filters(self, user_input):
         filters = self.driver.find_elements_by_class_name("d-inline-block")
         for site_filter in filters:
-            if site_filter.text == name:
+            if site_filter.text == "Lokalizacje":
                 site_filter.click()
         try:
             elements = WebDriverWait(self.driver, 10).until(
                 EC.presence_of_all_elements_located((By.CLASS_NAME, "filters-btn")))
-
-            for proper_element in elements:
-                if proper_element.text in user_input:
-                    proper_element.click()
-
+            for element in elements:
+                if element.text in user_input:
+                    element.click()
         except NoSuchElementException:
             print("Error in find_location_filter()")
             self.driver.quit()
 
-    def find_more_button_filter(self, name, user_input):
+    def choose_level_filters(self, user_input):
         filters = self.driver.find_elements_by_class_name("d-inline-block")
         for site_filter in filters:
             if site_filter.text == "Więcej":
@@ -126,35 +118,26 @@ class BrowserBot:
                     if label.text in user_input:
                         label.click()
                 except NoSuchElementException:
-                    print("Error in find_more_button_filter()")
+                    print("Error in choose_level_filters()")
                     self.driver.quit()
         except NoSuchElementException:
-            print("Error in find_more_button_filter()")
+            print("Error in choose_level_filters()")
             self.driver.quit()
 
-    def check_level(self, user_input):
+    def choose_category(self, user_input):
+        filters = self.driver.find_elements_by_class_name("d-inline-block")
+        for site_filter in filters:
+            if site_filter.text == "Kategoria":
+                site_filter.click()
         try:
-            labels = WebDriverWait(self.driver, 10).until(
-                EC.presence_of_all_elements_located((By.TAG_NAME, "label")))
-            for label in labels:
-                try:
-                    if label.text in user_input:
-                        label.click()
-                except NoSuchElementException:
-                    print("Error while checking seniority")
-                    self.driver.quit()
+            elements = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_all_elements_located((By.CLASS_NAME, "filters-btn")))
+            for proper_element in elements:
+                if proper_element.text in user_input:
+                    proper_element.click()
         except NoSuchElementException:
-            print("Error while selecting seniority")
+            print("Error in find_location_filter()")
             self.driver.quit()
-
-    def close_pop_up(self):
-        try:
-            element = WebDriverWait(self.driver, 5).until(
-                EC.element_to_be_clickable((By.CLASS_NAME, "close")))
-            element.click()
-        except NoSuchElementException:
-            print("There is no pop-up")
-            pass
 
     def close_browser(self):
         self.driver.quit()
