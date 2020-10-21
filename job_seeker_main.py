@@ -1,36 +1,37 @@
 import no_fluff_jobs
+from tabulate import tabulate
 
-print("Choose locations by typing names of the cities seperated by spaces")
-print("""Avialable options: Warszawa, Wrocław, Kraków, Gdańsk, Poznań, Trójmiasto, Sląśk, Łódź, Katowice 
-                Lublin, Szczecin, "Bydgoszcz, Białystko, Gdynia, Gliwice , Sopot""")
+cities = [["Warszawa", "Wrocław", "Kraków", "Gdańsk"], ["Poznań", "Trójmiasto", "Śląsk", "Łódź"],
+                  ["Katowice", "Lublin", "Szczecin", "Bydgoszcz"], ["Białystok", "Gdynia", "Gliwice", "Sopot"]]
 
-input_lokalizacje = list(map(str, input().split()))
+categories = [["Backend", "Frontend", "Fullstack", "Mobile"], ["Testing", "DevOps", "Embedded", "Security"],
+                      ["Gaming", "AI", "Big Data"]]
 
-print("Choose seniority by typing levels seperated by space")
-print("Avialable options: Stażysta, Junior, Mid, Senior, Expert")
-input_seniority = list(map(str, input().split()))
+print(tabulate(cities))
+print("Type locations after space:")
+input_locations = list(map(str, input().split()))
 
-print("Wait, collecting data...")
+print(tabulate([["Stażysta", "Junior", "Mid", "Expert"]]))
+print("Type job levels after spaces:")
+input_level = list(map(str, input().split()))
+
+print(tabulate(categories))
+print("Choose categories after spaces:")
+input_categories = list(map(str, input().split()))
+
+print("Wait, opening the browser...")
 
 Browser = no_fluff_jobs.BrowserBot()
 
-Browser.find_location_filter("Lokalizacje", input_lokalizacje)
-
+Browser.choose_location_filters(input_locations)
 Browser.click_confirm_button()
 
-Browser.find_more_button_filter("Więcej", input_seniority)
-
+Browser.choose_level_filters(input_level)
 Browser.click_confirm_button()
 
-Browser.collect_jobs_descriptions()
+Browser.choose_category(input_categories)
+Browser.click_confirm_button()
 
-Browser.collect_jobs_links()
-
-Browser.scroll_all_pages()
-
+Browser.collect_job_offers()
 Browser.close_browser()
-
 Browser.print_job_offers()
-
-
-
