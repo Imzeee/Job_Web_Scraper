@@ -5,7 +5,7 @@ Python program that uses Selenium to scrape job advertisements.
 ## Program operations:
 
 * Takes user input (locations, job levels, it jobs categories).
-* Bot does all clicking tasks on site automatically.
+* Bot does all clicking tasks on site automatically --> mouse is always in the same position.
 * Program outputs list of job advertisements matching user input with links to them.
 
 Click to watch short presentation video (bot does all clicking tasks on site automatically.) :
