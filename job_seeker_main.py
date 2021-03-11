@@ -2,10 +2,10 @@ import no_fluff_jobs
 from tabulate import tabulate
 
 cities = [["Warszawa", "Wrocław", "Kraków", "Gdańsk"], ["Poznań", "Trójmiasto", "Śląsk", "Łódź"],
-                  ["Katowice", "Lublin", "Szczecin", "Bydgoszcz"], ["Białystok", "Gdynia", "Gliwice", "Sopot"]]
+          ["Katowice", "Lublin", "Szczecin", "Bydgoszcz"], ["Białystok", "Gdynia", "Gliwice", "Sopot"]]
 
 categories = [["Backend", "Frontend", "Fullstack", "Mobile"], ["Testing", "DevOps", "Embedded", "Security"],
-                      ["Gaming", "AI", "Big Data"]]
+              ["Gaming", "AI", "Big Data"]]
 
 print(tabulate(cities))
 print("Type locations after space:")

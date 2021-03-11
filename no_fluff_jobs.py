@@ -4,6 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 import re
+import time
 
 
 class BrowserBot:
@@ -34,10 +35,13 @@ class BrowserBot:
 
     def collect_jobs_descriptions(self):
         try:
+            time.sleep(1)
             headers = WebDriverWait(self.driver, 10).until(
                 EC.presence_of_all_elements_located((By.CLASS_NAME, 'posting-list-item')))
+
             for header in headers:
                 self.jobs_descriptions.append(list(header.text.split("\n"))[0])
+
         except NoSuchElementException:
             print("Error in collect_jobs_description()")
             self.driver.quit()
@@ -70,6 +74,7 @@ class BrowserBot:
                 continue
 
     def collect_job_offers(self):
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight - 1500);")
         pages_available = WebDriverWait(self.driver, 10).until(
             EC.presence_of_all_elements_located((By.CLASS_NAME, "page-item")))
         check = False
