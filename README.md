@@ -6,6 +6,8 @@ Click to watch short presentation video:
 
 Python program that uses Selenium to scrape job advertisements.
 
+Bot does all clicking tasks on site automatically.
+
 Program should be run on Linux with Opera Browser version 74 installed.
 
 
